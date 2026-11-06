@@ -22,7 +22,29 @@ or [librosa](https://librosa.org) for beats and downbeats. It also doesn't decid
 goes where in the song; `fit_clip` returns `None` when a clip can't fill a slot, so you can
 try clips against slots and keep the ones that fit.
 
-Pure Python with no dependencies, 3.10 or newer.
+## Getting started
+
+beatfit is on PyPI: https://pypi.org/project/beatfit/. It needs Python 3.10 or newer and
+has no dependencies.
+
+```
+pip install beatfit
+```
+
+In a [uv](https://docs.astral.sh/uv/) project, use `uv add beatfit` instead. The ffmpeg
+helper (`beatfit.ffmpeg`) also needs [ffmpeg](https://ffmpeg.org) on your PATH; the fitting
+itself doesn't.
+
+To fit a clip you need:
+
+1. The moments in the recording, as frame numbers at the frame rate you pick (`Params.fps`,
+   60 by default).
+2. The song's beats and downbeats in seconds, from your beat tracker.
+3. Where in the song the clip goes: its first output frame and its length in frames.
+   Usually this runs from one bar line to another.
+
+`fit_clip` then returns the pieces, or `None` if the clip can't fill that stretch. The
+example below goes through it, and [Concepts](#concepts) describes every option.
 
 ## Example
 
