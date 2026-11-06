@@ -1,5 +1,4 @@
-"""Fit video clips to music: land chosen moments on beats, keep real time where it matters,
-and speed up only long dead time, gently."""
+"""Retime video clips so chosen moments land on the beats of a song."""
 
 from .fit import Clip, Event, Fit, Lead, Params, Piece, fit_clip, locate, protected, realtime_ok, source_at
 from .ramp import max_src, min_out, ramp

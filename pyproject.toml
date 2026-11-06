@@ -1,7 +1,7 @@
 [project]
 name = "beatfit"
 version = "0.1.0"
-description = "Fit video clips to music: land chosen moments on beats, keep real time where it matters, and speed up only long dead time."
+description = "Retime video clips so chosen moments land on the beats of a song."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
