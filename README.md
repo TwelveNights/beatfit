@@ -124,6 +124,19 @@ editors only ever see constant speeds.
 - [otio-music-arrangement](https://pypi.org/project/otio-music-arrangement/) builds
   beat-aligned OpenTimelineIO timelines from placeholder clips.
 
+## Releasing
+
+Set the new version in `pyproject.toml` and `src/beatfit/__init__.py`, commit, then tag
+and push:
+
+```
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+`.github/workflows/release.yml` runs the tests on Python 3.10 and 3.13, checks the tag
+matches both version numbers, builds, and publishes to PyPI through trusted publishing.
+
 ## License
 
 MIT
