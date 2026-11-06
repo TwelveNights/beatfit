@@ -15,6 +15,10 @@ classifiers = [
     "Topic :: Multimedia :: Sound/Audio :: Analysis",
 ]
 
+[project.urls]
+Homepage = "https://github.com/TwelveNights/beatfit"
+Issues = "https://github.com/TwelveNights/beatfit/issues"
+
 [build-system]
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
