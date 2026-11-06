@@ -1,0 +1,37 @@
+[project]
+name = "beatfit"
+version = "0.1.0"
+description = "Fit video clips to music: land chosen moments on beats, keep real time where it matters, and speed up only long dead time."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Eddie Zhou" }]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["video", "music", "beat", "montage", "editing", "retiming", "ffmpeg"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/beatfit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 130
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.ruff.lint]
+# int() around round()/floor() is deliberate: inputs may be numpy floats (beats from a tracker)
+# zip(xs, xs[1:]) for successive pairs is fine
+ignore = ["RUF046", "RUF007"]
