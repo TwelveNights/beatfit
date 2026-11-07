@@ -31,9 +31,9 @@ has no dependencies.
 pip install beatfit
 ```
 
-In a [uv](https://docs.astral.sh/uv/) project, use `uv add beatfit` instead. The ffmpeg
-helper (`beatfit.ffmpeg`) also needs [ffmpeg](https://ffmpeg.org) on your PATH; the fitting
-itself doesn't.
+In a [uv](https://docs.astral.sh/uv/) project, use `uv add beatfit` instead. Rendering
+(`beatfit.ffmpeg`, `beatfit.timeline`) also needs [ffmpeg](https://ffmpeg.org) on your PATH;
+the fitting itself doesn't.
 
 To fit a clip you need:
 
@@ -70,17 +70,36 @@ for p in fit.pieces:  # constant-speed pieces: source frames -> output frames
 print(fit.event_out, fit.event_on_beat, fit.event_err_ms)
 ```
 
-To render it with ffmpeg (video only):
+## Rendering
+
+`beatfit.timeline` renders fitted clips back to back with their own audio:
 
 ```python
 import subprocess
-from beatfit.ffmpeg import command
+from beatfit.timeline import Shot, Transitions, command
 
-subprocess.run(command("recording.mp4", fit.pieces, fps, "clip.mp4"), check=True)
+shots = [
+    Shot("recording.mp4", fit.pieces, src_lo=0, src_hi=40 * fps),
+    Shot("other.mp4", other_fit.pieces),
+]
+cmd = command(shots, "montage.mp4", fps, Transitions(), song="song.flac", song_gain_db=-10)
+subprocess.run(cmd, check=True)
 ```
 
-`beatfit.ffmpeg.filter_graph` and `input_args` return the parts of that command, for use
-in a larger filter graph.
+The audio is cut to the sample (`48000 / fps` samples per frame, so `fps` has to divide
+48000) and sped-up pieces are time-stretched with ffmpeg's `atempo`, which keeps the pitch.
+Cuts are soft: both sides of a cut run on past it and overlap, centred on the cut, with a
+0.5 s dissolve and a 0.6 s audio crossfade between shots and 0.25 s / 0.3 s at a jump cut.
+The extra footage comes from outside the fitted pieces, so every frame away from a cut stays
+exactly where the fit put it. `src_lo` / `src_hi` limit how far a shot
+may reach for it (e.g. not into the next scene). `Transitions.hard()` gives plain cuts.
+
+With `song`, the song starts with the first shot and plays under the clips' audio at
+`song_gain_db`. For more control (ducking, loudness), `runs`, `video_graph`,
+`audio_graph`, `video_inputs` and `audio_inputs` return the parts of that command;
+`Shot.video_filter` takes ffmpeg filters for one shot's frames, such as a crop and scale.
+
+`beatfit.ffmpeg.command` is the simpler case: one fitted clip, video only.
 
 ## Concepts
 
@@ -132,7 +151,8 @@ editors only ever see constant speeds.
 
 - It fits one clip into one slot. Choosing and ordering clips is up to you.
 - Times are whole frames, so an event lands within half a frame of its beat (8 ms at 60 fps).
-- The ffmpeg helper renders video only. Retiming or muting the audio is up to you.
+- Audio is retimed with `atempo`, which suits speech and game sound; music in the footage
+  will sound stretched where it is sped up.
 - It was written for game highlight montages at 60 fps. Other footage and tempos have only
   been tested with synthetic data.
 

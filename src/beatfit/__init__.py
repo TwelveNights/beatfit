@@ -3,7 +3,7 @@
 from .fit import Clip, Event, Fit, Lead, Params, Piece, fit_clip, locate, protected, realtime_ok, source_at
 from .ramp import max_src, min_out, ramp
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Clip",
